@@ -122,11 +122,11 @@ Beware of look-alike package names. The only official package is `keyleakcheck`.
 - It does not check whether a key still works, and it does not edit your files. Both would break the guarantees above. Treat every finding as live until you revoke it, and remove old keys yourself.
 - It looks at this machine only. Keys already pushed to a remote, a backup or a cloud sync folder need to be revoked there too.
 
-## Optional companion: keyleakcheck-fix
+## Planned: an optional companion package
 
-Checking whether a key is still live needs the network, and redacting keys from history files needs to write to disk. Those features live in a separate, paid package, `keyleakcheck-fix`, that you install only if you want them. It has its own published guarantees: it connects only to a fixed allowlist of official provider API hosts, asks before every request and every file change, and backs up every file before changing it.
+Checking whether a key is still live needs the network, and redacting keys from history files needs to write to disk. If these features are built, they will live in a separate, opt-in package (planned name `keyleakcheck-fix`) with its own published guarantees: it would connect only to a fixed allowlist of official provider API hosts, ask before every request and every file change, and back up every file before changing it. It is not available yet.
 
-This package, `keyleakcheck`, never depends on it and never gains those capabilities.
+This package, `keyleakcheck`, will never depend on it and will never gain those capabilities.
 
 ## Options
 

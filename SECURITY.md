@@ -41,4 +41,4 @@ Guarantees 1 to 4 are enforced by `test/guarantees.test.js` and `test/scan.test.
 ## Out of scope
 
 - Keys that do not match a known provider pattern.
-- Checking whether a found key is still valid, or removing keys from files. These need network access or file writes, which this package will never have. They belong to the separate, opt-in `keyleakcheck-fix` package, which publishes its own guarantees.
+- Checking whether a found key is still valid, or removing keys from files. These need network access or file writes, which this package will never have. If built, they will live in a separate, opt-in package (planned, not yet available) with its own published guarantees.
