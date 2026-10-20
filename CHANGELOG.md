@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-10-20)
 
 - First release.
 - Scans agent folders (Claude Code, Codex CLI, Gemini CLI, OpenCode, Continue, Cline), agent and MCP configs, editor storage (VS Code, Cursor, Windsurf and forks), shell history and startup files, and the project directory.

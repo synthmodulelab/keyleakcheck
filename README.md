@@ -147,6 +147,8 @@ This package, `keyleakcheck`, never depends on it and never gains those capabili
 
 Found a vulnerability? Please report it privately; see [SECURITY.md](SECURITY.md).
 
+Version 0.1.0 has not yet had an independent security review. The code is small and every guarantee is tested in CI, but a second pair of eyes is welcome: reviews and issues are appreciated.
+
 ## License
 
 [MIT](LICENSE)
