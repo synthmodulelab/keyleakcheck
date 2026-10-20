@@ -1,0 +1,53 @@
+name: Release
+
+# Publishing happens only here, from a version tag, never from a laptop.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: npm-publish   # require manual approval in repo settings
+    permissions:
+      contents: write          # create the GitHub release
+      id-token: write          # npm provenance and artifact attestation
+      attestations: write
+    steps:
+      # Pin actions to full commit SHAs before the first release (see MAINTAINER_CHECKLIST.md).
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Tag matches package.json version
+        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+
+      - run: npm test
+
+      - name: Build tarball and checksum
+        run: |
+          npm pack
+          sha256sum keyleakcheck-*.tgz > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: keyleakcheck-*.tgz
+
+      - name: Publish to npm with provenance
+        run: npm publish keyleakcheck-*.tgz --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub release
+        run: gh release create "$GITHUB_REF_NAME" keyleakcheck-*.tgz SHA256SUMS --title "$GITHUB_REF_NAME" --notes-file CHANGELOG.md
+        env:
+          GH_TOKEN: ${{ github.token }}

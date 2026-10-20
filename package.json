@@ -1,0 +1,42 @@
+{
+  "name": "keyleakcheck",
+  "version": "0.1.0",
+  "description": "Find the API keys your AI agents left in plaintext. Offline, read-only, zero dependencies.",
+  "bin": {
+    "keyleakcheck": "bin/keyleakcheck.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "SECURITY.md",
+    "VERIFY.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "secrets",
+    "api-key",
+    "security",
+    "ai-agents",
+    "mcp",
+    "claude-code",
+    "cursor",
+    "codex"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/synthmodulelab/keyleakcheck.git"
+  },
+  "author": "synthmodulelab",
+  "homepage": "https://github.com/synthmodulelab/keyleakcheck#readme",
+  "bugs": {
+    "url": "https://github.com/synthmodulelab/keyleakcheck/issues"
+  }
+}

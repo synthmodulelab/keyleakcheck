@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [20, 22, 24]
+    runs-on: ${{ matrix.os }}
+    steps:
+      # Pin actions to full commit SHAs before the first release (see MAINTAINER_CHECKLIST.md).
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm test
+      - name: Check published file list
+        if: matrix.os == 'ubuntu-latest' && matrix.node == 22
+        run: npm pack --dry-run
+
+  runtime-guarantees:
+    # Proves at the operating-system level that a real scan makes no network
+    # and no file-write system calls. Exit code 1 (keys found) is fine; 2 is a failure.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: sudo apt-get update && sudo apt-get install -y strace
+      - name: Randomised detection test, 5,000 documents
+        run: FUZZ_ITERATIONS=5000 node --test test/fuzz.test.js
+      - name: Build a fixture home with fake keys
+        run: node scripts/make-fixture.js "$RUNNER_TEMP/fixture"
+      - name: Scan under the Node.js permission model (read-only)
+        run: |
+          set +e
+          HOME="$RUNNER_TEMP/fixture/home" node --permission --allow-fs-read="*" bin/keyleakcheck.js --path "$RUNNER_TEMP/fixture/project" --card
+          code=$?
+          test "$code" -le 1
+      - name: No network or file-write system calls (strace)
+        run: |
+          set +e
+          HOME="$RUNNER_TEMP/fixture/home" strace -f -qq -e trace=socket,connect,sendto,sendmsg,bind,openat,unlink,unlinkat,rename,renameat,renameat2,mkdir,mkdirat,truncate,chmod -o trace.txt node bin/keyleakcheck.js --path "$RUNNER_TEMP/fixture/project" > /dev/null
+          bad=$(grep -E 'socket|connect|sendto|sendmsg|bind\(|O_WRONLY|O_RDWR|O_CREAT|unlink|rename|mkdir|truncate|chmod' trace.txt | grep -vE '/dev/(null|tty|pts)' || true)
+          if [ -n "$bad" ]; then echo "$bad"; exit 1; fi
+          echo "files read: $(grep -c O_RDONLY trace.txt); network or write calls: 0"

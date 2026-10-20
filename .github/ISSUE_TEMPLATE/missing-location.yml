@@ -1,0 +1,32 @@
+name: Missing location
+description: An agent or tool stores keys somewhere Key Leak Check does not scan
+labels: [coverage]
+body:
+  - type: markdown
+    attributes:
+      value: "Please do not paste any real key, token or file contents here."
+  - type: input
+    id: tool
+    attributes:
+      label: Tool and version
+      placeholder: "e.g. Cline 3.4 in VS Code"
+    validations:
+      required: true
+  - type: input
+    id: path
+    attributes:
+      label: File or folder path
+      placeholder: "e.g. ~/.config/tool/history.jsonl"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options: [macOS, Linux, Windows]
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: How do you know keys end up there?
