@@ -31,7 +31,7 @@ Guarantees 1 to 4 are enforced by `test/guarantees.test.js` and `test/scan.test.
 | The tool sends secrets somewhere | No network code; static test; `fetch` tripwire; no dependencies that could add network code |
 | The tool damages or alters files | No write APIs; static test; read-only snapshot test |
 | Secrets end up in terminal logs, CI logs or screenshots | Masked output only; `--card` contains no keys and no paths |
-| A malicious version is published (compromised maintainer account or token) | Publishing only from CI with provenance; maintainer 2FA; short-lived, scoped npm token; users can verify provenance and attestations |
+| A malicious version is published (compromised maintainer account or token) | Publishing only from CI with provenance; maintainer 2FA; npm Trusted Publishing with no stored token, and token publishing disallowed on the package; users can verify provenance and attestations |
 | Typosquatting (a look-alike package) | README and VERIFY.md name the one official package; maintainers watch npm for look-alikes and report them |
 | A malicious contribution | Branch protection; required review; CI must pass, including the guarantee tests |
 | Symlink tricks or loops | Symlinked directories inside scanned folders are never followed (a known agent folder that is itself a symlink is followed, once); symlinked files are only read, and their contents are printed masked like any other file |

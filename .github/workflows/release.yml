@@ -17,17 +17,23 @@ jobs:
       id-token: write          # npm provenance and artifact attestation
       attestations: write
     steps:
-      # Pin actions to full commit SHAs before the first release (see MAINTAINER_CHECKLIST.md).
-      - uses: actions/checkout@v5
+      # Actions are pinned to full commit SHAs; Dependabot proposes updates.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org
+          node-version: 24
+          # No registry-url: that would write an .npmrc expecting a token.
+          # Publishing uses npm Trusted Publishing (OIDC) instead.
 
       - name: Tag matches package.json version
         run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+
+      - name: npm new enough for Trusted Publishing
+        run: |
+          npm install -g npm@^11.5.1
+          npm --version
 
       - run: npm test
 
@@ -38,14 +44,12 @@ jobs:
           cat SHA256SUMS
 
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
         with:
           subject-path: keyleakcheck-*.tgz
 
-      - name: Publish to npm with provenance
+      - name: Publish to npm with provenance (Trusted Publishing, no token)
         run: npm publish keyleakcheck-*.tgz --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Attach the tarball and checksum to the GitHub release
         # The release may already exist if the tag was created from the

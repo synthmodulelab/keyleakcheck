@@ -18,8 +18,8 @@ Bu liste, kodun dışında kalan ve yalnızca sizin yapabileceğiniz adımları 
 
 ## 3. Yayın altyapısı
 
-- [ ] npm'de mümkünse **Trusted Publishing** (GitHub Actions ile token'sız yayın) kurun. Kuramıyorsanız yalnızca `keyleakcheck` paketine yayın yetkisi olan, kısa süreli bir **granular access token** oluşturun ve `npm-publish` ortamına `NPM_TOKEN` adıyla ekleyin.
-- [ ] İş akışlarındaki `actions/...@v4` gibi etiketleri tam commit SHA'larına sabitleyin (örneğin `pinact` aracıyla) ve Dependabot'u GitHub Actions için açın.
+- [x] npm'de **Trusted Publishing** kuruldu (repo `synthmodulelab/keyleakcheck`, iş akışı `release.yml`, ortam `npm-publish`). Paket ayarında token ile yayın kapalı. Eski token ve `NPM_TOKEN` secret'ı silindi; yeni token oluşturmayın.
+- [x] Action'lar tam commit SHA'larına sabitlendi; Dependabot (`.github/dependabot.yml`) aylık güncelleme önerir. Dependabot PR'larında SHA'nın resmi etiketle eşleştiğini kontrol edip birleştirin.
 - [ ] İsteğe bağlı: OpenSSF Scorecard iş akışını ekleyip README'ye rozetini koyun. Güvenlik meraklıları buna bakar.
 
 ## 4. Gerçek ortamda test
